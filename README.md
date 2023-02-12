@@ -7,6 +7,8 @@
 
 - [2주차 - TS를 활용한 모델링](https://github.com/Minikanko/wanted-pre-onboarding-challenge-fe-2/tree/feature/%232_TypeScript)
 
+- [3주차 - 다른 사람의 TS 모델링을 보고 구현부 작성하기](https://github.com/Minikanko/wanted-pre-onboarding-challenge-fe-2/tree/feature/%233_Implemente_Typescript)
+
 
 ## 📕 주차별 미션 가이드
 > 요구 사항을 구현하지 않고 설계만합니다.
