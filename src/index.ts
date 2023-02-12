@@ -1,65 +1,115 @@
-// @author Dean
+interface TagData {
+  tagId: number;
+  tagName: string;
+}
 
-/**
- * 할일
- * @typedef {object} Todo
- * @property {number} id - 할일 id
- * @property {string} content -  내용
- * @property {boolean} isComplete - 완료여부
- * @property {string[]} category - 카테고리
- * @property {string[]} [tags] - 태그들
- */
+// Class representing a TodoItem.
+class TodoItem {
+  userId: string; // - The id of User.
+  content: string; // - The description of todoItem.
+  category: string; // - The category of todoItem.
+  tags?: TagData[]; // - The tagInfo List of todoItem, this is optional parameter
 
-interface ITodo {
+  // CREATE Methods ...
+  constructor(
+    userId: string,
+    content: string,
+    category: string,
+    tags: TagData[]
+  ) {
+    this.userId = userId;
+    this.content = content;
+    this.category = category;
+    this.tags = tags;
+  }
+
+  //  메소드의 리턴타입을 지정해주면 어떨까요??
+  updateContent(content: string) {
+    this.content = content;
+  }
+
+  //  메소드의 리턴타입을 지정해주면 어떨까요??
+  updateCategory(category: string) {
+    this.category = category;
+  }
+
+  //  메소드의 리턴타입을 지정해주면 어떨까요??
+  updateTag(tagId: number, tagName: string) {
+    const updateTag = this.tags?.map((item) => {
+      if (item.tagId === tagId) {
+        item.tagName = tagName;
+      }
+      return item;
+    });
+
+    this.tags = updateTag;
+  }
+
+  deleteTag(tagId: number) {
+    this.tags = this.tags?.filter((item) => {
+      if (item.tagId !== tagId) {
+        return item;
+      }
+    });
+  }
+
+  deleteTagAll() {
+    this.tags = [];
+  }
+
+  // READ Methods...
+  render(parentNode: HTMLElement) {
+    //...
+  }
+}
+interface TodoItemData {
   id: number;
-  content: string;
-  isComplete: boolean;
-  category?: string[];
-  tags?: string[];
-}
-/**
- * 내용 없이 추가할 수 없다.
- */
-interface IAddTodo {
-  content: string;
-  category?: string[];
-  tags?: string[];
+  todoItem: TodoItem;
 }
 
-function create(_fn: ({ content, category, tags }: IAddTodo) => ITodo) {}
+class TodoList {
+  todoListData: TodoItemData[];
 
-/**
- * 모든 할 일을 조회할 수 있다.
- * ID를 기반으로 특정 할 일을 조회할 수 있다.
- */
-function read(_fn: (id: number) => ITodo) {}
+  constructor() {
+    this.todoListData = [];
+  }
 
-/**
- * ID를 제외한 모든 속성을 수정할 수 있다.
- * 특정 할 일의 특정 태그를 수정할 수 있다.
- */
-function update(_fn: (todo: ITodo) => ITodo) {}
+  // CREATE Methods...
+  addTodoItem(
+    userId: string,
+    content: string,
+    category: string,
+    tags?: TagData[]
+  ) {
+    const index = this.todoListData[this.todoListData.length - 1].id;
+    this.todoListData.push({
+      id: index + 1,
+      todoItem: new TodoItem(userId, content, category, tags ?? []),
+    });
+  }
 
-/**
- * 모든 할 일을 제거할 수 있다.
- */
-function deleteAllTodo(): void {}
+  // DELETE Methods...
+  deleteTodoItem(userId: string, todoId: number) {
+    const list = this.todoListData.filter((item) => {
+      !(item.id === todoId && item.todoItem.userId === userId);
+    });
+    this.todoListData = list;
+  }
 
-/**
- * ID를 기반으로 특정 할 일을 삭제할 수 있다.
- */
-function deleteById(_fn: (id: string) => void) {}
+  deleteTodoList(userId: string) {
+    const list = this.filterTodoListByUser(userId);
+    this.todoListData = list;
+  }
 
-/**
- * 특정 할 일의 특정 태그를 삭제할 수 있다.
- */
-interface IRemoveTag {
-  id: number;
-  targetTags: string[];
+  // READ Methods...
+  filterTodoListByUser(userId: string): TodoItemData[] {
+    const list = this.todoListData.filter((item) => {
+      !(item.todoItem.userId === userId);
+    });
+    return list;
+  }
+
+  render() {
+    // ...
+  }
 }
-function deleteTag(_fn: ({ id, targetTags }: IRemoveTag) => ITodo) {}
-
-/**
- * 특정 할 일의 모든 태그를 제거할 수 있다.
- */
-function deleteAllTag(_fn: ({ id: number }) => ITodo) {}
